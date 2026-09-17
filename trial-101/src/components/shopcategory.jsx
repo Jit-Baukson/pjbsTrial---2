@@ -3,9 +3,7 @@ import { Link } from 'react-router-dom'
 function ShopCategory() {
 
      const categories = ["doraemon", "spongebob"];
-
-
-    
+   
     return(
         <div className="shop-category">
             <h2>Catergories</h2>

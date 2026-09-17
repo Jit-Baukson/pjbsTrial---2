@@ -3,27 +3,45 @@ import { useState, useEffect} from 'react'
 
 function ProductsDisplay({ category }) {
 
-    const [products, setProducts] = useState([])
+    const [individualProducts, setIndividualProducts] = useState([])
+    const [groupProducts, setGroupProducts] = useState([])
+
+    const [failedImages, setFailedImages] = useState([])
+    console.log(import.meta.env.VITE_SUPABASE_URL)
     
     console.log(category)
+    console.log("shopProducts are actually running")
 
     useEffect(() => {
         grabData()
-    }, [])
+    }, [category])
 
     async function grabData() {
-        const [data,error] = await supabase
-            .from('[products')
+        const { data: iProducts, error: iProductsError }= await supabase
+            .from('products')
             .select('*')
-            setProducts(data)
-            console.log(data)
+            .eq('category', category)
+            .eq('packed', 'individual')
 
-        if(error) {
-            console.warn(error);
+        const { data: gProducts, error: iGroductsError } = await supabase
+            .from('products')
+            .select('*')
+            .eq('category', category)
+            .eq('packed', 'group')
+
+        
+        setIndividualProducts(iProducts)
+        setGroupProducts(gProducts)
+
+        if(iProductsError) {
+            console.warn(iProductsError);
+        }
+        if(iGroductsError) {
+            console.warn(iGroductsError);
         }
     }
 
-    console.log(`C: ${category}`)
+//    console.log(products[0].category)
     return(
         <div className="shop-products">
             <div className="products__title">
@@ -31,27 +49,36 @@ function ProductsDisplay({ category }) {
             </div>
 
             <div className="products__layout">
-                <div className="mystery-pack">
-                    <div className="img-background">
-                        <img
-                            src="../assets/images/groups/catCluster.png"
-                            alt="cool groups of cat stickers"
-                        />
-                        <p className="product__price">10K</p>
+                {groupProducts.map((product, i) => (
+                    <div className="mystery-pack">
+                        <div className="img-background">
+                            <img
+                                src={`/outputFiles/${product.imagePath}`}
+                                alt="cool groups of cat stickers"
+                            />
+                            <p className="product__price">{product.price > 1000 ? (product.price / 1000) + 'K' : product.price}</p>
+                        </div>
+                        <p className="product__title">{product.productCode}</p>
                     </div>
-                    <p className="product__title">products name-4pcs</p>
-                </div>
-
-                <div className="individual-pack">
-                    <div className="img-background">
-                        <img
-                            src="../assets/images/groups/catCluster.png"
-                            alt="cool groups of cat stickers"
-                        />
-                        <p className="product__price">4K</p>
+                ))}
+                
+                {individualProducts.filter(product => !failedImages.includes(product.productCode)).map((product, i) => (
+                    <div className="individual-pack" key={`individual-${product.category}-${i}`}>
+                        <div className="img-background">
+                            <img
+                                className="individual__img"
+                                src={`/outputFiles/${product.imagePath}`}
+                                alt="cool groups of cat stickers"
+                                loading='lazy'
+                                onError={(e) => {
+                                    setFailedImages(fail => [...fail,  product.productCode])
+                                }}
+                            />
+                            <p className="product__price">{product.price > 1000 ? (product.price / 1000) + 'K' : product.price}</p>
+                        </div>
+                        <p className="product__title">{product.productCode}</p>
                     </div>
-                    <p className="product__title">products name-4pcs</p>
-                </div>
+                ))}
             </div>
         </div>
     );

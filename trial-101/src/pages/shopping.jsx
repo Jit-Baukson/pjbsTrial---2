@@ -1,8 +1,8 @@
-import React, {useState, useEffect} from 'react'
+
 import { useParams } from 'react-router-dom'
-import { supabase } from '../lib/supabaseClient.js'
 import ShopCategory from '../components/shopcategory.jsx'
 import ProductsDisplay from '../components/shopproducts.jsx'
+import Footer from '../components/footer.jsx'
 
 function Shopping() {
    
@@ -16,6 +16,7 @@ function Shopping() {
                 <ShopCategory/>
                 <ProductsDisplay category={category}/>
             </section>
+            <Footer/>
         </main>
     );
 }
