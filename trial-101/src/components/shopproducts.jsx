@@ -1,4 +1,29 @@
-function ProductsDisplay() {
+import { supabase } from '../lib/supabaseClient.js'
+import { useState, useEffect} from 'react'
+
+function ProductsDisplay({ category }) {
+
+    const [products, setProducts] = useState([])
+    
+    console.log(category)
+
+    useEffect(() => {
+        grabData()
+    }, [])
+
+    async function grabData() {
+        const [data,error] = await supabase
+            .from('[products')
+            .select('*')
+            setProducts(data)
+            console.log(data)
+
+        if(error) {
+            console.warn(error);
+        }
+    }
+
+    console.log(`C: ${category}`)
     return(
         <div className="shop-products">
             <div className="products__title">

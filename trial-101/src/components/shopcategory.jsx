@@ -1,4 +1,8 @@
+import { Link } from 'react-router-dom'
+
 function ShopCategory() {
+
+     const categories = ["doraemon", "spongebob"];
 
 
     
@@ -7,15 +11,13 @@ function ShopCategory() {
             <h2>Catergories</h2>
             <div className="categories__rule"></div>
             <div className="category__container">
-                <div className="category__product">
-                    Doraemon
-                </div>
-                <div className="category__product">
-                    Sinchan
-                </div>
-                <div className="category__product">
-                    indo meme
-                </div>
+                {categories.map((category, index) => (
+                    <div key={index} className="category__product">
+                        <Link to={`/shopping/${category}`}>
+                            {category}
+                        </Link>
+                    </div>
+                ))}
             </div>
         </div>
     );
