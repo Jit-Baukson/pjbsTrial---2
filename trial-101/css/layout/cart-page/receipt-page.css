@@ -1,0 +1,83 @@
+.cart-page__total {
+    max-width: 25vw;
+
+    max-height: 80vh;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    position: fixed;
+    left: 50%;
+    top: 10%;
+    transform: translateX(-50%);
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    background: var(--white);
+    padding: 2vh 4vh 5vh; 
+    border-radius: 2px;
+
+    z-index: 1000;
+}
+
+.total__header{
+    text-align: center;
+    font-family: var(--font-display);
+    padding: 0;
+    margin: 0;
+    font-size: clamp(1rem, 8vw, 3rem);
+    /*-webkit-text-stroke: 4px var(--panel-bg);*/
+    text-shadow:
+        var(--outline) 0 var(--panel-bg),
+        calc(var(--outline) * 0.9) calc(var(--outline) * 0.3) var(--panel-bg),
+        calc(var(--outline) * 0.8) calc(var(--outline) * 0.6) var(--panel-bg),
+        calc(var(--outline) * 0.6) calc(var(--outline) * 0.8) var(--panel-bg),
+        calc(var(--outline) * 0.3) var(--outline) var(--panel-bg),
+        0 var(--outline) var(--panel-bg),
+        calc(var(--outline) * -0.3) var(--outline) var(--panel-bg),
+        calc(var(--outline) * -0.6) calc(var(--outline) * 0.8) var(--panel-bg),
+        calc(var(--outline) * -0.8) calc(var(--outline) * 0.6) var(--panel-bg),
+        calc(var(--outline) * -0.9) calc(var(--outline) * 0.3) var(--panel-bg),
+        calc(var(--outline) * -1) 0 var(--panel-bg),
+        calc(var(--outline) * -0.9) calc(var(--outline) * -0.3) var(--panel-bg),
+        calc(var(--outline) * -0.8) calc(var(--outline) * -0.6) var(--panel-bg),
+        calc(var(--outline) * -0.6) calc(var(--outline) * -0.8) var(--panel-bg),
+        calc(var(--outline) * -0.3) calc(var(--outline) * -1) var(--panel-bg),
+        0 calc(var(--outline) * -1) var(--panel-bg),
+        calc(var(--outline) * 0.3) calc(var(--outline) * -1) var(--panel-bg),
+        calc(var(--outline) * 0.6) calc(var(--outline) * -0.8) var(--panel-bg),
+        calc(var(--outline) * 0.8) calc(var(--outline) * -0.6) var(--panel-bg),
+        calc(var(--outline) * 0.9) calc(var(--outline) * -0.3) var(--panel-bg);
+}
+
+.total__rule {
+    width: clamp(3vw, 90%, 100%);
+    height: var(--total-rule);
+    flex-shrink: 0;
+    background: var(--ink);
+}
+
+.summary-box {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 40px 0 0 10px;
+}
+.final-summary {
+    margin-inline: auto;
+}
+.summary__title{
+    font-family: var(--font-display);
+    padding-top: 10px;
+    font-size: 1.12rem;
+    
+}
+
+.summary__content{
+    font-family: var(--font-body);
+    padding-bottom: 20px;
+    font-size: 1rem;
+    margin-left: clamp(20px, 35px, 45px);
+}

@@ -1,0 +1,64 @@
+/* ========================================
+   BASE
+   ======================================== */
+
+@import url("./base/variables.css");
+@import url("./base/reset.css");
+@import url("./base/typography.css");
+@import url("./base/global.css");
+@import url("./base/animations.css");
+
+
+/* ========================================
+   UTILITIES
+   ======================================== */
+
+@import url("./utilities/helpers.css");
+
+
+/* ========================================
+   COMPONENTS
+   ======================================== */
+@import url("./components/card.css");
+@import url("./components/buttons.css");
+@import url("./components/quantity.css");
+
+
+/* ========================================
+   LAYOUT — Shared
+   ======================================== */
+
+@import url("./layout/main-page/header.css");
+@import url("./layout/main-page/footer.css");
+
+
+/* ========================================
+   LAYOUT — Main page (index.html)
+   ======================================== */
+
+@import url("./layout/main-page/hero.css");
+@import url("./layout/main-page/gallery.css");
+@import url("./layout/main-page/about.css");
+
+
+/* ========================================
+   LAYOUT — Cart page (cart.html)
+   ======================================== */
+
+@import url("./layout/cart-page/cart.css");
+@import url("./layout/cart-page/products-page.css");
+@import url("./layout/cart-page/receipt-page.css");
+
+
+/* ========================================
+   LAYOUT — Shop page (shop.html)
+   ======================================== */
+
+@import url("./layout/shop-page/shop.css");
+
+
+/* ========================================
+   LAYOUT — Login page (login.html)
+   ======================================== */
+
+@import url("./layout/login-page/login.css");

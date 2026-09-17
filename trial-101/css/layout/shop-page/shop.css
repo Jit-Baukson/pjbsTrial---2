@@ -1,0 +1,199 @@
+.shop-page {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    padding-inline : var(--page-gutter)
+}
+.shop-category {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px 5px;
+    background-color: var(--light-cream);
+    border-radius: 12px;
+}
+
+.shop-category h2 {
+    padding: 10px 20px;
+    text-align: center;
+    font-size: 2rem;
+    text-shadow:
+    calc(var(--outline) * 0.6) 0 var(--panel-bg),
+    calc(var(--outline) * 0.54) calc(var(--outline) * 0.18) var(--panel-bg),
+    calc(var(--outline) * 0.48) calc(var(--outline) * 0.36) var(--panel-bg),
+    calc(var(--outline) * 0.36) calc(var(--outline) * 0.48) var(--panel-bg),
+    calc(var(--outline) * 0.18) calc(var(--outline) * 0.6) var(--panel-bg),
+    0 calc(var(--outline) * 0.6) var(--panel-bg),
+    calc(var(--outline) * -0.18) calc(var(--outline) * 0.6) var(--panel-bg),
+    calc(var(--outline) * -0.36) calc(var(--outline) * 0.48) var(--panel-bg),
+    calc(var(--outline) * -0.48) calc(var(--outline) * 0.36) var(--panel-bg),
+    calc(var(--outline) * -0.54) calc(var(--outline) * 0.18) var(--panel-bg),
+    calc(var(--outline) * -0.6) 0 var(--panel-bg),
+    calc(var(--outline) * -0.54) calc(var(--outline) * -0.18) var(--panel-bg),
+    calc(var(--outline) * -0.48) calc(var(--outline) * -0.36) var(--panel-bg),
+    calc(var(--outline) * -0.36) calc(var(--outline) * -0.48) var(--panel-bg),
+    calc(var(--outline) * -0.18) calc(var(--outline) * -0.6) var(--panel-bg),
+    0 calc(var(--outline) * -0.6) var(--panel-bg),
+    calc(var(--outline) * 0.18) calc(var(--outline) * -0.6) var(--panel-bg),
+    calc(var(--outline) * 0.36) calc(var(--outline) * -0.48) var(--panel-bg),
+    calc(var(--outline) * 0.48) calc(var(--outline) * -0.36) var(--panel-bg),
+    calc(var(--outline) * 0.54) calc(var(--outline) * -0.18) var(--panel-bg);
+}
+.categories__rule {
+    width: clamp(3vw, 90%, 100%);
+    height: var(--total-rule);
+    flex-shrink: 0;
+    background: var(--white);
+}
+
+.category__container {
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+    position:sticky;
+    gap: 0;
+    padding-block: var(--category-gap);
+      
+}
+
+.category__product {
+    width: var(--category-width);
+
+    background-color: var(--brown-wood);
+    border: 5px solid var(--bg-cream);
+    border-radius: 18px;
+    padding: 5px 10px;
+    margin-bottom: -20px;
+
+
+    text-align: center;
+    font-family: var(--font-body);
+    color: var(--bg-cream);
+    font-size: 1.5rem;
+    font-weight: 800;
+    transition: all 1s var(--ease-out);
+}
+
+.category__product:nth-child(1) { z-index: 1; }
+.category__product:nth-child(2) { z-index: 2; }
+.category__product:nth-child(3) { z-index: 3; }
+
+.category__product:not(:last-child):hover {
+    transform: translateY(-30px);
+    z-index: 10;
+}
+
+.shop-products {
+    display: flex;
+    flex-direction: column;
+}
+.products__title {
+    width: 90%;
+    margin: auto;
+    background-color: var(--light-cream);
+
+    border-radius: 12px;
+}
+.products__title h2 {
+    padding: 10px 20px;
+    text-align: center;
+    font-size: 3rem;
+    text-shadow:
+    calc(var(--outline) * 0.6) 0 var(--panel-bg),
+    calc(var(--outline) * 0.54) calc(var(--outline) * 0.18) var(--panel-bg),
+    calc(var(--outline) * 0.48) calc(var(--outline) * 0.36) var(--panel-bg),
+    calc(var(--outline) * 0.36) calc(var(--outline) * 0.48) var(--panel-bg),
+    calc(var(--outline) * 0.18) calc(var(--outline) * 0.6) var(--panel-bg),
+    0 calc(var(--outline) * 0.6) var(--panel-bg),
+    calc(var(--outline) * -0.18) calc(var(--outline) * 0.6) var(--panel-bg),
+    calc(var(--outline) * -0.36) calc(var(--outline) * 0.48) var(--panel-bg),
+    calc(var(--outline) * -0.48) calc(var(--outline) * 0.36) var(--panel-bg),
+    calc(var(--outline) * -0.54) calc(var(--outline) * 0.18) var(--panel-bg),
+    calc(var(--outline) * -0.6) 0 var(--panel-bg),
+    calc(var(--outline) * -0.54) calc(var(--outline) * -0.18) var(--panel-bg),
+    calc(var(--outline) * -0.48) calc(var(--outline) * -0.36) var(--panel-bg),
+    calc(var(--outline) * -0.36) calc(var(--outline) * -0.48) var(--panel-bg),
+    calc(var(--outline) * -0.18) calc(var(--outline) * -0.6) var(--panel-bg),
+    0 calc(var(--outline) * -0.6) var(--panel-bg),
+    calc(var(--outline) * 0.18) calc(var(--outline) * -0.6) var(--panel-bg),
+    calc(var(--outline) * 0.36) calc(var(--outline) * -0.48) var(--panel-bg),
+    calc(var(--outline) * 0.48) calc(var(--outline) * -0.36) var(--panel-bg),
+    calc(var(--outline) * 0.54) calc(var(--outline) * -0.18) var(--panel-bg);
+}
+
+.products__layout {
+    max-width: var(--frame-width);
+    display: grid;
+    width: 90%;
+    margin: auto;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-columns: auto;
+    padding-block: 1rem;
+    gap: 1rem;
+}
+
+.mystery-pack {
+    grid-column: span 2;
+    grid-row: span 2;
+    aspect-ratio: 1/1;
+}
+
+/*product card ui*/
+
+.products__layout .mystery-pack,
+.products__layout .individual-pack{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 3px;
+    padding-top: 24px;
+    border-radius: 12px;
+
+    background-color: var(--soft-gold);
+}
+
+.img-background {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 90%;
+    flex: 1;
+    min-height: 0;
+    padding: 15px;
+
+    border-radius: 8px;
+
+    background-color: var(--white);
+}
+
+.img-background img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+
+.product__price {
+    position: absolute; 
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 2rem, 3rem);
+    font-weight: 800;
+}
+.mystery-pack .product__price{
+    font-size: clamp(2rem, 2.4rem, 3rem);
+    top: 75%;
+    left: 90%;
+}
+.mystery-pack .product__title {
+    font-size: 2rem;
+    font-weight: 600;
+}
+.individual-pack .product__price {
+    top: 55%;
+    left: 85%;
+}
+.individual-pack .product__title {
+    font-size: 1.1rem;
+    font-weight: 500;
+}

@@ -1,0 +1,33 @@
+:root{
+    --bg-cream: #EFEAE2;
+    --ink: #2c2a27f8;
+    --brown-dark:#3A2D21;
+    --brown-nav: #754515;
+    --gold: #BF9C00;
+    --soft-gold: #C3B58C3C;
+    --light-cream: #C9B896;
+    --panel-bg: #FBF6EA;
+    --white: #fff;
+    --badge-outline: #454242;
+    --brown-wood:#7a6945; 
+
+
+    --font-display: "DynaPuff", system-ui, sans-serif;
+    --font-serif: "EB Garamond", Georgia, serif;
+    --font-body: "Plus Jakarta Sans", system-ui, sans-serif;
+
+    --frame-width: 1400px;
+    --page-gutter: clamp(20px, 4.6vw, 65px);
+    --outline: clamp(6px, 1vw, 10px);
+    --outline-thin: 5px;
+    --header-rule: 5px;
+    --total-rule: 2px;
+
+    --category-width: clamp(10vw, 270px, 20vw);
+    --category-height: 30px;
+    --category-gap: 20px;
+
+
+    --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --duration: 0.55s;
+}

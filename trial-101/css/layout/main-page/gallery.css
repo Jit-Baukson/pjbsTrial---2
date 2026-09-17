@@ -1,0 +1,119 @@
+.gallery {
+    max-width: var(--frame-width);
+    margin: 0 auto;
+    padding:
+        clamp(24px, 4vw, 48px)
+        var(--page-gutter)
+        clamp(2px, 2vw, 120px);
+}
+
+.gallery__header {
+    margin: 0 0 clamp(28px, 4vw, 48px);
+    padding-right: clamp(10px, 8vw, 120px);
+
+    font-family: var(--font-display);
+    font-size: clamp(4rem, 6vw, 8rem);
+    font-weight: 600;
+    letter-spacing: -0.05em;
+    line-height: 0.95;
+    color: var(--ink);
+    text-align: right;
+
+    transform: rotate(8deg);
+    margin-bottom: 150px;
+}
+.gallery__header::before {
+    content: "";
+    position: absolute;
+
+    width: 120%;
+    height: auto;
+
+    left: 50%;
+    top: 50%;
+
+    transform: translate(-50%, -50%) rotate(-8deg);
+
+    background: url("../../../assets/icons/header-background.svg") center/contain no-repeat;
+}
+
+@media (max-width: 960px) {
+    .gallery__heading {
+        text-align: left;
+        padding-right: 0;
+    }
+}
+
+/* Sticker layout */
+
+.sticker-collage {
+    display: grid;
+    grid-template-columns: repeat(3, max-content);
+
+    justify-content: center;
+
+    column-gap: 24px;
+    row-gap: 24px;
+}
+
+.sticker-collage img {
+    display: block;
+    width: 100%;
+    max-width: 190px;
+    height: auto;
+    transition: all 0.2s var(--ease-out);
+}
+
+.sticker-collage img:hover {
+    transform: translateY(-4px) scale(1.08);
+    
+}
+
+/* Center a final row containing two images */
+.sticker-collage img:nth-last-child(2):nth-child(3n + 1) {
+    grid-column: 2 / span 2;
+}
+
+/* Center a final row containing one image */
+.sticker-collage img:last-child:nth-child(3n + 1) {
+    grid-column: 3 / span 2;
+}
+
+@media (max-width: 700px) {
+    .sticker-collage {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .sticker-collage img {
+        grid-column: auto;
+    }
+
+    .sticker-collage img:last-child:nth-child(odd) {
+        grid-column: 1 / -1;
+        max-width: 50%;
+    }
+}
+
+@media (max-width: 720px) {
+    .sticker-collage {
+        aspect-ratio: auto;
+        min-height: auto;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+    }
+
+    .sticker {
+        position: relative;
+        left: auto;
+        top: auto;
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1;
+        opacity: 1;
+    }
+
+    .sticker img {
+        aspect-ratio: 1;
+    }
+}

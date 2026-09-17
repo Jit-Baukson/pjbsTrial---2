@@ -1,0 +1,58 @@
+.about-card__cat{
+    position: absolute;
+    bottom: clamp(20px, 26vw, 400px);
+    right: clamp(40px, 30vw, 200px);
+    width: clamp(140px, 16vw, 180px);
+    min-height: clamp(128px, 15vw, 165px);
+    padding: 16px;
+    display: grid;
+    place-items: center;
+}
+
+.about__badge img {
+    width: 300px;
+    height: auto;
+}
+
+
+.about-card {
+    position: relative;
+    z-index: 1;
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: clamp(28px, 4vw, 54px);
+    border: 5px solid var(--ink);
+    border-radius: 24px;
+    background: var(--panel-bg);
+    box-shadow: -12px 10px 2px 0px rgba(0, 0, 0, 0.25);
+    transform: rotate(2deg);
+
+}
+
+.about-card__body {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: clamp(1.1rem, 2.2vw, 2rem);
+    font-weight: 700;
+    line-height: 1.875;
+    color: var(--ink);
+}
+
+.about-card__brand {
+    display: inline;
+    text-decoration: underline;
+    font-style: italic;
+    font-weight: 900;
+    line-height: 1.1;
+}
+
+.about-card__brand strong {
+    font-weight: 800;
+    font-style: italic;
+}
+
+.about-card__gold {
+    color: var(--gold);
+    font-weight: 800;
+    font-style: italic;
+}
