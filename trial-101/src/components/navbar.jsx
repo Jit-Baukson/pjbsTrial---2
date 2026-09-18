@@ -1,18 +1,20 @@
+import { Link } from 'react-router-dom'
+
 function Navbar() {
     return(
         <header className="site-header">
             <div className="site-header__inner">
-            <a className="brand-mark" href="index.html" aria-label="Stickit home">
+            <Link className="brand-mark" to='/' aria-label="Stickit home">
                 <svg className="site-header__icon" width="99" height="150" viewBox="0 0 99 150" fill="none" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
                 <path fillRule="evenodd" clipRule="evenodd" d="M71.2482 142.014C119.238 113.514 89.3607 89.5082 76.221 1.07368C64.2735 13.3717 58.5823 21.3116 49.5848 36.6425C40.8017 21.6029 34.7094 14.6996 21.3799 5.81286C8.28646 86.327 -19.262 111.711 23.4561 140.263C40.0157 151.332 55.19 151.55 71.2482 142.014ZM46.671 63.3352L46.7028 63.2317C49.1693 55.2268 49.6483 53.6716 58.6388 51.5235C65.5298 52.4695 68.2817 55.4325 69.4313 62.7421C69.284 69.3574 68.7617 73.728 58.2927 75.4876C51.1434 75.8519 47.2408 74.4128 46.671 63.3352ZM18.8559 63.8553C20.5723 54.2941 23.0418 52.1273 28.3228 50.1637C37.0413 51.1395 38.5506 54.7382 39.9445 62.3162C38.711 73.0593 35.5541 75.2178 27.9501 75.9712C19.5511 74.6464 18.0331 71.6677 18.8559 63.8553Z" fill="black"/>
                 <path d="M46.671 63.3352C47.2408 74.4128 51.1434 75.8519 58.2927 75.4876C68.7617 73.728 69.284 69.3574 69.4313 62.7421C68.2817 55.4325 65.5298 52.4695 58.6388 51.5235C49.6483 53.6716 49.1693 55.2268 46.7028 63.2317L46.671 63.3352ZM46.7028 63.2317C46.6923 63.2667 46.6816 63.3018 46.671 63.3352M19.2147 95.0848C30.9155 125.06 42.9074 118.466 42.0963 111.711C41.2851 104.957 28.7199 94.6 27.0303 88.871M76.2209 98.1131C64.0339 122.308 52.4318 111.598 53.3541 106.08L64.5211 91.3735M71.2482 142.014C119.238 113.514 89.3607 89.5082 76.221 1.07368C64.2735 13.3717 58.5823 21.3116 49.5848 36.6425C40.8017 21.6029 34.7094 14.6996 21.3799 5.81286C8.28646 86.327 -19.262 111.711 23.4561 140.263C40.0157 151.332 55.19 151.55 71.2482 142.014ZM28.3228 50.1637C23.0418 52.1273 20.5723 54.2941 18.8559 63.8553C18.0331 71.6677 19.5511 74.6464 27.9501 75.9712C35.5541 75.2178 38.711 73.0593 39.9445 62.3162C38.5506 54.7382 37.0413 51.1395 28.3228 50.1637Z" stroke="#454242"/>
                 </svg>
-            </a>
+            </Link>
             <nav className="main-nav" aria-label="Primary">
-                <a className="main-nav__link" href="index.html">Home</a>
-                <a className="main-nav__link" href="index.html#about-card">About</a>
-                <a className="main-nav__link" href="index.html#gallery-header">Category</a>
-                <a className="main-nav__link" href="index.html#contact-heading">More</a>
+                <a className="main-nav__link" href="">Home</a>
+                <a className="main-nav__link" href="#about__heading">About</a>
+                <a className="main-nav__link" href="#gallery-header">Category</a>
+                <a className="main-nav__link" href="#contact-heading">More</a>
             </nav>
             {/* <a href="cart.html" aria-label="View cart">
                 <svg className="site-header__cart" width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">

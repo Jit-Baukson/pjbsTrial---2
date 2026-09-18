@@ -38,15 +38,16 @@
 .hero__mascot {
     display: flex;
     justify-content: center;
-    align-items: flex-start;
+    /* align-items: flex-start; */
 }
 
 
-.hero__mascot-img {
-    width: min(100%, 411px);
+.hero__mascot img {
+    width: clamp(300px, 19%, 500px);
     height: auto;
     animation: mascot-bob 4.2s ease-in-out infinite;
     transform-origin: center bottom;
+    transform: rotate(10deg);
 }
 
 

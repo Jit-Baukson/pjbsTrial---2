@@ -2,6 +2,7 @@
 import { useParams } from 'react-router-dom'
 import ShopCategory from '../components/shopcategory.jsx'
 import ProductsDisplay from '../components/shopproducts.jsx'
+import Navbar from '../components/navbar.jsx'
 import Footer from '../components/footer.jsx'
 
 function Shopping() {
@@ -11,13 +12,18 @@ function Shopping() {
     console.log(category)
 
     return(
-        <main className="main-content" id="main-content">
-            <section className="shop-page">
-                <ShopCategory/>
-                <ProductsDisplay category={category}/>
-            </section>
+        <>
+            <Navbar/>
+            <main className="main-content" id="main-content">
+                <section className="shop-page">
+                    <ShopCategory selectedCategory={category}/>
+                    <ProductsDisplay selectedCategory={category}/>
+                </section>
+                
+            </main>
             <Footer/>
-        </main>
+        </>
+        
     );
 }
 

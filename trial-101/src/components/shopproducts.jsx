@@ -1,7 +1,7 @@
 import { supabase } from '../lib/supabaseClient.js'
 import { useState, useEffect} from 'react'
 
-function ProductsDisplay({ category }) {
+function ProductsDisplay({ selectedCategory }) {
 
     const [individualProducts, setIndividualProducts] = useState([])
     const [groupProducts, setGroupProducts] = useState([])
@@ -9,24 +9,25 @@ function ProductsDisplay({ category }) {
     const [failedImages, setFailedImages] = useState([])
     console.log(import.meta.env.VITE_SUPABASE_URL)
     
-    console.log(category)
+    console.log(selectedCategory)
     console.log("shopProducts are actually running")
 
     useEffect(() => {
         grabData()
-    }, [category])
+        setFailedImages([])
+    }, [selectedCategory])
 
     async function grabData() {
         const { data: iProducts, error: iProductsError }= await supabase
             .from('products')
             .select('*')
-            .eq('category', category)
+            .eq('category', selectedCategory)
             .eq('packed', 'individual')
 
         const { data: gProducts, error: iGroductsError } = await supabase
             .from('products')
             .select('*')
-            .eq('category', category)
+            .eq('category', selectedCategory)
             .eq('packed', 'group')
 
         
@@ -41,7 +42,8 @@ function ProductsDisplay({ category }) {
         }
     }
 
-//    console.log(products[0].category)
+//    console.log(products[0].selectedCategory)
+console.log(individualProducts)
     return(
         <div className="shop-products">
             <div className="products__title">
@@ -49,12 +51,15 @@ function ProductsDisplay({ category }) {
             </div>
 
             <div className="products__layout">
-                {groupProducts.map((product, i) => (
+                {groupProducts.filter(product => !failedImages.includes(product.productCode)).map((product, i) => (
                     <div className="mystery-pack">
                         <div className="img-background">
                             <img
                                 src={`/outputFiles/${product.imagePath}`}
                                 alt="cool groups of cat stickers"
+                                onError={(e) => {
+                                    return setFailedImages(fail => [...fail, product.productCode])
+                                }}
                             />
                             <p className="product__price">{product.price > 1000 ? (product.price / 1000) + 'K' : product.price}</p>
                         </div>
@@ -71,7 +76,7 @@ function ProductsDisplay({ category }) {
                                 alt="cool groups of cat stickers"
                                 loading='lazy'
                                 onError={(e) => {
-                                    setFailedImages(fail => [...fail,  product.productCode])
+                                    return setFailedImages(fail => [...fail,  product.productCode])
                                 }}
                             />
                             <p className="product__price">{product.price > 1000 ? (product.price / 1000) + 'K' : product.price}</p>
@@ -79,6 +84,12 @@ function ProductsDisplay({ category }) {
                         <p className="product__title">{product.productCode}</p>
                     </div>
                 ))}
+
+                {individualProducts.length + groupProducts.length > 0 &&
+                failedImages.length === individualProducts.length + groupProducts.length && (
+                    <h4>There's no Products to be displayed</h4>
+                )}
+
             </div>
         </div>
     );

@@ -26,6 +26,7 @@
     --category-width: clamp(10vw, 270px, 20vw);
     --category-height: 30px;
     --category-gap: 20px;
+    --min-element-height: 60vh;
 
 
     --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);

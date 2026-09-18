@@ -7,9 +7,12 @@ function Stickit() {
     return(
         <>
             <Navbar/>
-            <Header/>
-            <Category/>
-            <AboutUs/>
+            <section className="main-content">
+                <Header/>
+                <Category/>
+                <AboutUs/>
+            </section>
+            
             <Footer/>
         </>
     );
