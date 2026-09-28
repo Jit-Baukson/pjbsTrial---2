@@ -22,7 +22,7 @@ function Header() {
                 </p>
 
                 <a className="shop-btn" href="shop.html">
-                    <span><Link to='/shopping'>Shop Now!</Link></span>
+                    <span><Link to='/shopping/doraemon'>Shop Now!</Link></span>
                 </a>    
             </div>
 

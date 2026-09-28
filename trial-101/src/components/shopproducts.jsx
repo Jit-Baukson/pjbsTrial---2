@@ -85,8 +85,7 @@ console.log(individualProducts)
                     </div>
                 ))}
 
-                {individualProducts.length + groupProducts.length > 0 &&
-                failedImages.length === individualProducts.length + groupProducts.length && (
+                {individualProducts.length + groupProducts.length > 0&& (
                     <h4>There's no Products to be displayed</h4>
                 )}
 
