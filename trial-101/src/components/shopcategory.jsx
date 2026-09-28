@@ -10,13 +10,16 @@ function ShopCategory({ selectedCategory }) {
             <div className="categories__rule"></div>
             <div className="category__container">
                 {categories.map((category, index) => (
-                    <div key={index} className={`category__product ${category == selectedCategory ? "selected" : ""}`}>
-                        <Link to={`/shopping/${category}`}>
-                            {category}
-                        </Link>
-                        {console.log(category, selectedCategory, category === selectedCategory)}
-                       
-                    </div>
+                    <Link to={`/shopping/${category}`}>
+                        <div key={index} className={`category__product ${category == selectedCategory ? "selected" : ""}`}>
+                            <Link to={`/shopping/${category}`}>
+                                {category}
+                            </Link>
+                            {console.log(category, selectedCategory, category === selectedCategory)}
+                        
+                        </div>
+                    </Link>
+                    
                 ))}
             </div>
         </div>

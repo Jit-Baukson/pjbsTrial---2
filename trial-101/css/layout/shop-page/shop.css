@@ -211,3 +211,293 @@
     font-size: 1.1rem;
     font-weight: 500;
 }
+
+
+/* ========================================
+   PRODUCT CARD HOVER
+======================================== */
+
+.mystery-pack,
+.individual-pack {
+    cursor: pointer;
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.mystery-pack:hover,
+.individual-pack:hover {
+    transform: translateY(-5px);
+}
+
+.mystery-pack img,
+.individual-pack img {
+    transition: transform 0.3s ease;
+}
+
+.mystery-pack:hover img,
+.individual-pack:hover img {
+    transform: scale(1.04);
+}
+
+
+/* Dark background overlay */
+/* ========================================
+   PRODUCT MODAL OVERLAY
+======================================== */
+
+.product-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 20px;
+
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(3px);
+}
+
+
+/* ========================================
+   PRODUCT MODAL
+======================================== */
+
+.product-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 20px;
+
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(3px);
+
+    animation: overlay-fade-in 0.25s ease forwards;
+}
+
+/* Closing animation */
+.product-modal-overlay.closing {
+    animation: overlay-fade-out 0.25s ease forwards;
+}
+
+
+
+/* ========================================
+   PRODUCT IMAGE
+======================================== */
+
+.modal-product-img {
+    width: 100%;
+    max-height: 350px;
+
+    object-fit: contain;
+
+    border-radius: 10px;
+}
+
+
+/* ========================================
+   PRODUCT INFORMATION
+======================================== */
+
+.modal-product-title {
+    margin: 0;
+
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+.modal-product-price {
+    margin: 0;
+
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+
+/* ========================================
+   CLOSE BUTTON
+======================================== */
+
+.modal-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 1;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 36px;
+    height: 36px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: white;
+    color: black;
+
+    font-size: 28px;
+    line-height: 1;
+
+    cursor: pointer;
+}
+
+.modal-close:hover {
+    background: #eee;
+}
+
+/* ========================================
+   MODAL ANIMATION
+======================================== */
+
+.product-modal {
+    position: relative;
+
+    width: min(100%, 450px);
+    max-height: 90vh;
+    overflow-y: auto;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+
+    padding: 28px;
+
+    border-radius: 16px;
+    background: white;
+    color: black;
+
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.25);
+
+    animation: modal-pop-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Closing animation */
+.closing .product-modal {
+    animation: modal-pop-out 0.25s ease forwards;
+}
+
+
+/* ========================================
+   ADD TO CART BUTTON
+======================================== */
+
+.add-to-cart-btn {
+    width: 100%;
+
+    padding: 14px;
+
+    border: none;
+    border-radius: 8px;
+
+    background: var(--brown-dark    );
+    color: white;
+
+    font-size: 16px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: background 0.2s ease;
+}
+
+.add-to-cart-btn:hover {
+    background: #333;
+}
+
+.add-to-cart-btn {
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.add-to-cart-btn:hover {
+    background: #333;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.add-to-cart-btn:active {
+    transform: scale(0.97);
+}
+
+
+/* ========================================
+   KEYFRAMES
+======================================== */
+
+@keyframes overlay-fade-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes overlay-fade-out {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes modal-pop-in {
+    from {
+        opacity: 0;
+        transform: translateY(25px) scale(0.92);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes modal-pop-out {
+    from {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(15px) scale(0.94);
+    }
+}
+
+/* ========================================
+   MOBILE RESPONSIVENESS
+======================================== */
+
+@media (max-width: 480px) {
+    .product-modal {
+        padding: 20px;
+        border-radius: 12px;
+    }
+
+    .modal-product-img {
+        max-height: 280px;
+    }
+
+    .modal-product-title {
+        font-size: 1.25rem;
+    }
+}
