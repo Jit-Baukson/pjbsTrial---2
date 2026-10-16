@@ -13,7 +13,7 @@ function Footer() {
                 <li className="contact-list__item reveal">
                 <a className="contact-link" href="https://www.instagram.com/stickit.co_official/">
                     <img src={instagramLogo} alt="Instagram logo" width="20" height="20" loading="lazy"/>
-                    <span class="contact-link__label">Stickit.co_official</span>
+                    <span className="contact-link__label">Stickit.co_official</span>
                 </a>
                 </li>
                 <li className="contact-list__item reveal">

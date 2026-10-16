@@ -21,9 +21,9 @@ function Header() {
                     Established by a random idea at night, we help you find the one that fills your empty space.
                 </p>
 
-                <a className="shop-btn" href="shop.html">
-                    <span><Link to='/shopping/doraemon'>Shop Now!</Link></span>
-                </a>    
+                <Link className="shop-btn" to='/shopping/doraemon'>
+                    Shop Now!
+                </Link>
             </div>
 
             <div className="hero__mascot">

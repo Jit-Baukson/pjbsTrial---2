@@ -11,7 +11,7 @@ function Navbar() {
                 </svg>
             </Link>
             <nav className="main-nav" aria-label="Primary">
-                <a className="main-nav__link" href="">Home</a>
+                <Link className="main-nav__link" to="/home">Home</Link>
                 <a className="main-nav__link" href="#about__heading">About</a>
                 <a className="main-nav__link" href="#gallery-header">Category</a>
                 <a className="main-nav__link" href="#contact-heading">More</a>

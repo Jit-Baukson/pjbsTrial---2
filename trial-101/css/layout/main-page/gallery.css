@@ -8,6 +8,7 @@
 }
 
 .gallery__header {
+    position: relative;
     margin: 0 0 clamp(28px, 4vw, 48px);
     padding-right: clamp(10px, 8vw, 120px);
 
@@ -34,7 +35,7 @@
 
     transform: translate(-50%, -50%) rotate(-8deg);
 
-    background: url("../../../assets/icons/header-background.svg") center/contain no-repeat;
+    background: url("../../../src/assets/icons/header-background.svg") center/contain no-repeat;
 }
 
 @media (max-width: 960px) {

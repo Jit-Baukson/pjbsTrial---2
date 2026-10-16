@@ -1,4 +1,3 @@
-import doraemonCluster from '../assets/images/groups/doraemonCluster.png'
 import spongebobCluster from '../assets/images/groups/spongebobCluster.png'
 import randomAestheticCluster from '../assets/images/groups/randomAestheticCluster.png'
 import pokemonCluster from '../assets/images/groups/pokemonCluster.png'

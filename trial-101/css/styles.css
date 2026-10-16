@@ -55,6 +55,9 @@
    ======================================== */
 
 @import url("./layout/shop-page/shop.css");
+@import url("./layout/shop-page/shop__category.css");
+@import url("./layout/shop-page/shop__header.css");
+@import url("./layout/shop-page/shop__products.css");
 
 
 /* ========================================

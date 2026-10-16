@@ -1,0 +1,43 @@
+.shop-header {
+    position: relative;
+    display: grid;
+    gap: 2rem;
+}
+
+.site-header__rule {
+    max-width: calc(var(--frame-width) - (var(--page-gutter) * 2));
+    margin: 16px auto 0;
+    height: var(--header-rule);
+    background: var(--ink);
+}
+
+.shop-header__inner {
+    display: flex;
+    max-width: var(--frame-width);
+    margin: 0 auto;
+    padding: 0 var(--page-gutter);
+    gap: 5rem;
+    align-items: center;
+}
+.shop-header__icon {
+    width: clamp(40%, 100px, 50%);
+    height: auto;
+}
+
+.brand-name__container {
+    padding: 0;
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+}
+
+.brand-name__shop {
+    position: block;
+    font-size: 8rem;
+    color: var(--brown);
+    margin: 0;
+}
+.brand-name-company__shop {
+    position:-ms-page;
+    font-size: 1.5rem;
+}

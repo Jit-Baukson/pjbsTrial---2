@@ -10,6 +10,7 @@
 }
 
 .login-card {
+    margin: 3% auto;
     max-width: 420px;
     width: 100%;
     padding: 28px;
@@ -39,7 +40,8 @@
     grid-area: note
 }
 .login-card img {
-    width: clamp(25%, 40%, 90px);
+    width: 60%;
+    margin-left: clamp(30px, 40%, 60px);
     height: auto;
     grid-area: logo;
 }
@@ -70,6 +72,13 @@
     gap: 12px;
     align-items: center;
     justify-content: space-between;
+}
+
+.login-btn {
+    font-size: 2rem;
+}
+.signup-btn {
+    font-size: 1.5rem;
 }
 
 .secondary {

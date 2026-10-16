@@ -2,18 +2,16 @@
 import { useParams } from 'react-router-dom'
 import ShopCategory from '../components/shopcategory.jsx'
 import ProductsDisplay from '../components/shopproducts.jsx'
-import Navbar from '../components/navbar.jsx'
+import Header from '../components/shopHeader.jsx'
 import Footer from '../components/footer.jsx'
 
 function Shopping() {
    
     const { category } = useParams()
 
-    console.log(category)
-
     return(
         <>
-            <Navbar/>
+            <Header/>
             <main className="main-content" id="main-content">
                 <section className="shop-page">
                     <ShopCategory selectedCategory={category}/>
