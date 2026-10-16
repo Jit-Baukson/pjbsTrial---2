@@ -5,7 +5,7 @@
 }
 
 .site-header__rule {
-    max-width: calc(var(--frame-width) - (var(--page-gutter) * 2));
+    width: calc(var(--frame-width) - (var(--page-gutter) * 2));
     margin: 16px auto 0;
     height: var(--header-rule);
     background: var(--ink);
