@@ -1,9 +1,22 @@
 import instagramLogo from '../assets/icons/instagram-logo.svg'
 import gmailLogo from '../assets/icons/gmail-logo.svg'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
+
+const COMPANY_EMAIL = 'Stickit.co.official@gmail.com'
 
 function Footer() {
     const [copied, setCopied] = useState(false);
+    // Bumping this key remounts the toast so the fireworks replay on repeat clicks.
+    const [burst, setBurst] = useState(0);
+    const timer = useRef(null);
+
+    function copyEmail() {
+        navigator.clipboard.writeText(COMPANY_EMAIL)
+        setCopied(true)
+        setBurst((b) => b + 1)
+        clearTimeout(timer.current)
+        timer.current = setTimeout(() => setCopied(false), 2000)
+    }
 
     return(
           <footer className="site-footer" id="footer__contact">
@@ -17,17 +30,7 @@ function Footer() {
                 </a>
                 </li>
                 <li className="contact-list__item reveal">
-                <button
-                    className="contact-link"
-                    onClick={() => {
-                        navigator.clipboard.writeText("Stickit.co.official@gmail.com")
-                        setCopied(true)
-
-                        setTimeout(() => {
-                            setCopied(false)
-                        }, 2000)
-                    }}
-                >
+                <button className="contact-link" onClick={copyEmail}>
                     <img
                         src={gmailLogo}
                         alt="Gmail logo"
@@ -36,19 +39,22 @@ function Footer() {
                         loading="lazy"
                     />
                     <span className="contact-link__label">
-                        Stickit.co.official@gmail.com
+                        {COMPANY_EMAIL}
                     </span>
                 </button>
                 </li>
             </ul>
             </div>
-        
+
             {copied && (
-            <div className="copy-popup">
-                Email copied to clipboard!
+            <div className="copy-toast" key={burst} role="status" aria-live="polite">
+                <span className="copy-toast__burst" aria-hidden="true">
+                    <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                </span>
+                Email has been copied
             </div>
             )}
-            
+
         </footer>
     );
 }

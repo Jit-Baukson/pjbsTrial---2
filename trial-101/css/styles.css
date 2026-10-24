@@ -65,3 +65,12 @@
    ======================================== */
 
 @import url("./layout/login-page/login.css");
+
+
+/* ========================================
+   RESPONSIVE — additive mobile layer
+   Loaded last so it can adapt the existing
+   layout without changing desktop rules.
+   ======================================== */
+
+@import url("./mobile-responsive.css");

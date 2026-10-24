@@ -5,6 +5,9 @@ import { Link } from 'react-router-dom'
 function Header() {
     return (
         <section className="hero" aria-labelledby="hero-heading">
+            <h1 className="visually-hidden" id="hero-heading">
+                Stickit.co — handmade character stickers and mystery packs
+            </h1>
             <div className="hero__content">
                 <div className="hero__brand">
                     <img

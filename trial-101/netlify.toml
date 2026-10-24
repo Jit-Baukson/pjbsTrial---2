@@ -1,0 +1,42 @@
+# Used when Netlify's "Base directory" is set to `trial-101`.
+# The repository-root netlify.toml is for deployments that leave the UI base
+# directory blank. Keeping both makes the same build work in either setup.
+#
+# Build settings:
+#   Build command:     npm run build
+#   Publish directory: dist
+#   Node:              22
+#
+# Required environment variables are listed in the repository-root
+# netlify.toml and in the README.
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# React Router SPA fallback. Without this, direct visits and refreshes on
+# /home, /shopping/... or /cart return Netlify's default 404 page.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Frame-Options = "DENY"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/outputFiles/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"

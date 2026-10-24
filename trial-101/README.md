@@ -1,13 +1,14 @@
 # Stickit.co — Sticker Shop
 
-React + Vite storefront backed by Supabase (local Docker stack). Catalog browsing,
-guest cart, and Midtrans (Snap) checkout.
+React + Vite storefront backed by Supabase. Catalog browsing, a local cart,
+email/password accounts, and Midtrans (Snap) checkout with meet-up handover.
 
 ## Stack
 
 - Vite + React + React Router
-- Supabase: Postgres + RLS, Edge Functions (Deno) for payments
+- Supabase: Postgres + RLS, Auth, Edge Functions (Deno) for payments
 - Midtrans Snap for IDR payments
+- Netlify for the static frontend (`netlify.toml` at the repository root)
 
 ## Running locally
 
@@ -16,71 +17,147 @@ guest cart, and Midtrans (Snap) checkout.
    supabase start
    ```
 2. Copy `.env.example` to `.env.local` and fill in the values `supabase start`
-   prints (API URL + publishable key).
-3. Apply the schema/RLS/order changes to the local DB:
+   prints (API URL + publishable key). Midtrans needs a sandbox client key for
+   checkout.
+3. Apply pending local migrations:
    ```bash
-   supabase db push
+   supabase db push --local
    ```
 4. Run the app: `npm install` then `npm run dev`.
 
+> Do **not** run `supabase db reset` against a database that contains your
+> product catalog; it wipes the rows. The migrations intentionally never seed
+> the real catalog.
+
 ## Database
 
-`supabase/migrations/20261016120000_ecommerce_schema_and_security.sql` is the
-source of truth for orders. It is **idempotent** (reconciles the drifted
-`products` table with `add column if not exists`) and:
+The catalog is the hand-built `products` table, keyed by the unique text
+`productCode` (there is no `id`) with:
 
-- enables **RLS** on `products`, `orders`, `order_items`
-- creates `orders` / `order_items`
-- creates the `create_order()` RPC — the only way to place an order. It
-  recomputes every price **from the DB**, never trusting the client.
+- `category`, `packed` (`individual` | `group`), `price`, `imagePath`
+- `availability` — false once a unique individual sticker is reserved
 
-> Note: your existing `products` rows were originally added outside migration
-> history. If you ever run `supabase db reset`, seed data is wiped — prefer
-> `supabase db push` (or `supabase migration up`) for the local DB.
+Migrations:
 
-## Payments (Midtrans) — manual setup
+- `20260913110740_create_products.sql` — legacy bootstrap table.
+- `20261019000000_ecommerce.sql` — adds the catalog columns, public catalog
+  read policy, `orders` / `order_items` / `profiles`, and the original
+  `create_order()` RPC.
+- `20261022081119_initial_schema.sql` — reconciles the hand-built catalog
+  (safe `IF EXISTS` / no-op on databases that already dropped `id`/`name`).
+- `20261024000000_harden_checkout.sql` — hardened `create_order()` (availability,
+  quantity and duplicate checks) plus `apply_payment_status()`, which releases
+  unique sticker reservations on failed/expired payments and ignores late or
+  duplicate webhook notifications.
 
-Two Edge Functions need secrets before checkout works:
+`create_order()` is the only way to place an order. It requires a signed-in
+user, recomputes every price from the database, locks each product row, and
+flips individual stickers to `availability = false`. `apply_payment_status()`
+is executable only by `service_role` (the webhook).
 
-- `midtrans-create-transaction` — mints a Snap token from a stored order
-- `midtrans-webhook` — receives payment notifications, verifies the SHA-1
-  signature, and updates the order status
+### Applying to the hosted Supabase project
 
-**Serve locally:**
+Review and apply migrations deliberately; never overwrite production data:
+
 ```bash
-supabase functions serve midtrans-create-transaction midtrans-webhook
+supabase migration list          # compare local vs remote first
+supabase db push                 # applies only migrations the project is missing
 ```
 
-Set the function secrets (stored via the CLI / dashboard, never committed):
+At the time of the pre-launch audit, the hosted project only recorded
+`20260913110740` and was missing the `orders`, `order_items`, `profiles` and
+RPC objects. Verify with `supabase migration list` before deploying the
+frontend; checkout cannot work until the e-commerce migration is applied.
+
+## Payments (Midtrans)
+
+Two Edge Functions:
+
+- `midtrans-create-transaction` — verifies the signed-in user owns the pending
+  order, recomputes the amount from the DB (including shipping), and mints a
+  Snap token.
+- `midtrans-webhook` — verifies the SHA-1 signature, then calls
+  `apply_payment_status()` to update the order atomically.
+
+Function JWT settings live in `supabase/config.toml`:
+
+- `midtrans-create-transaction`: `verify_jwt = true`
+- `midtrans-webhook`: `verify_jwt = false` (Midtrans cannot send a Supabase JWT;
+  the SHA-1 signature authenticates the request)
+
+Deploy and configure:
+
 ```bash
+supabase functions deploy midtrans-create-transaction
+# The webhook is called by Midtrans, not by a Supabase user, so it must not
+# require a Supabase JWT. The function authenticates with the SHA-1 signature.
+supabase functions deploy midtrans-webhook --no-verify-jwt
 supabase functions secrets set MIDTRANS_SERVER_KEY=your-server-key
-supabase functions secrets set MIDTRANS_ENV=sandbox
-supabase functions secrets set SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+supabase functions secrets set MIDTRANS_ENV=production
 ```
-For production, run `supabase functions deploy` and flip `MIDTRANS_ENV=production`.
 
-The browser only ever sees the **public** client key (`VITE_MIDTRANS_CLIENT_KEY`,
-`VITE_MIDTRANS_ENV` in `.env.local`). The Server Key stays on the backend.
+`SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are injected by Supabase; do not
+put them in any `VITE_` variable. The browser only sees the public Midtrans
+client key.
 
-Point the Midtrans dashboard **Notification Webhook URL** to
-`<project-url>/functions/v1/midtrans-webhook`. For local webhook testing you
-need a public tunnel (e.g. ngrok) in front of the functions server.
+Point the Midtrans dashboard **Notification Webhook URL** to:
 
-Use Midtrans **Sandbox** keys and the sandbox card / VA numbers to test without
-real money.
+```text
+https://<project-ref>.supabase.co/functions/v1/midtrans-webhook
+```
+
+Set the Supabase Auth **Site URL** to the Netlify URL and add it to the redirect
+allow-list before testing sign-up confirmation emails.
+
+## Netlify deployment
+
+The repository root contains `netlify.toml` with:
+
+- Base directory: `trial-101`
+- Build command: `npm run build`
+- Publish directory: `dist`
+- Node: `22`
+- SPA fallback: `/* → /index.html` (200)
+- Security and immutable-asset headers
+
+Set these Netlify environment variables before the first build:
+
+| Variable | Value |
+| --- | --- |
+| `VITE_SUPABASE_URL` | `https://<project-ref>.supabase.co` |
+| `VITE_SUPABASE_PUBLISHABLE_KEY` | Supabase publishable (or anon) key |
+| `VITE_MIDTRANS_CLIENT_KEY` | Midtrans client key (public) |
+| `VITE_MIDTRANS_ENV` | `production` |
+
+The Vite config fails the production build if the Supabase variables or a
+production Midtrans client key are missing, so a misconfigured deploy fails in
+the build log instead of rendering a blank page.
+
+### Post-deploy smoke test
+
+1. Open `/home`, `/shopping/doraemon`, `/cart` and refresh each URL directly.
+2. Sign up / sign in, then reload to confirm the session persists.
+3. Add a sticker to the cart and reach checkout.
+4. Complete a sandbox payment and confirm the receipt plus the order status in
+   Supabase.
+5. Send a test Midtrans notification and confirm the webhook updates the order.
 
 ## Notes & remaining work
 
-- **Guest-only for now.** `src/context/auth.jsx` already tracks the real
-  Supabase session, so enabling email/Google auth later is a UI change, not a
-  refactor. The `/login` page is an honest "guest checkout / accounts coming
-  soon" screen.
-- **Cart is `localStorage`.** When accounts land, add a DB cart table and sync
-  it inside `CartProvider` (the reducer/API won't change).
-- **Receipts** are read from a `sessionStorage` snapshot (guests can't query
-  RLS-locked orders). Paid status is authoritative in the DB via the webhook.
-- Flat shipping cost (`8000`) is defined in both the migration and
+- **Accounts are required for checkout.** The cart itself remains
+  `localStorage`; syncing it to an account is future work.
+- **Receipts** use a `sessionStorage` snapshot. Payment status in the database
+  is authoritative; the webhook updates it.
+- **A closed payment window** retries the same pending order from checkout.
+  If Midtrans rejects a second Snap session for the same `order_id`, a
+  dedicated payment-attempt table/token cache may be needed.
+- Flat shipping cost (`4500`) is defined in both
+  `20261019000000_ecommerce.sql` / `20261024000000_harden_checkout.sql` and
   `src/lib/checkout.js` — keep them in sync.
+- Product images live in `public/outputFiles` (~48 MB). They are lazy-loaded,
+  but generating smaller thumbnails would reduce mobile data use.
+- ESLint is not configured with its missing dev dependencies; `npm run build`
+  and `npm audit` are the available checks today.
 
 ---
 

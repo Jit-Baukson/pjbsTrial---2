@@ -1,13 +1,12 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { supabase } from '../lib/supabaseClient.js'
 
-// Guest-aware auth.
-// Accounts are intentionally deferred, but this provider already:
-//   * reads the real Supabase session on load,
-//   * subscribes to auth changes,
-//   * exposes a stable shape (user / loading / signIn / signUp / signOut),
-// so enabling email or Google auth later is a UI change, not a refactor.
-// Guest checkout works fully without any of the sign-in methods being wired.
+// Email + password auth on top of Supabase.
+//   * reads the real session on load and subscribes to changes,
+//   * sessions persist in localStorage (see supabaseClient) so users stay
+//     signed in across visits,
+//   * exposes signIn / signUp / signOut returning the raw Supabase result so
+//     callers can surface data.error to the UI.
 const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
@@ -15,10 +14,11 @@ export function AuthProvider({ children }) {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        supabase.auth.getSession().then(({ data }) => {
-            setSession(data.session)
-            setLoading(false)
-        })
+        supabase.auth
+            .getSession()
+            .then(({ data }) => setSession(data.session))
+            .catch(() => setSession(null))
+            .finally(() => setLoading(false))
 
         const { data: sub } = supabase.auth.onAuthStateChange((_event, s) => {
             setSession(s)
@@ -31,8 +31,13 @@ export function AuthProvider({ children }) {
         () => ({
             session,
             user: session?.user ?? null,
+            email: session?.user?.email ?? null,
             loading,
             isGuest: loading ? false : !session,
+            signIn: (email, password) =>
+                supabase.auth.signInWithPassword({ email, password }),
+            signUp: (email, password) =>
+                supabase.auth.signUp({ email, password }),
             signOut: () => supabase.auth.signOut(),
         }),
         [session, loading]

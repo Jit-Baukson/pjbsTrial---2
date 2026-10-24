@@ -1,0 +1,53 @@
+# Netlify configuration for the Stickit.co storefront.
+# Repository root: pjbsTrial - 2
+# Deployable app:  trial-101
+#
+# Netlify > Site configuration > Build & deploy:
+#   Base directory:    trial-101   (the `base` below does this automatically)
+#   Build command:     npm run build
+#   Publish directory: dist
+#   Node version:      22
+#
+# Required environment variables (Site configuration > Environment variables):
+#   VITE_SUPABASE_URL
+#   VITE_SUPABASE_PUBLISHABLE_KEY
+#   VITE_MIDTRANS_CLIENT_KEY
+#   VITE_MIDTRANS_ENV = production
+#
+# Server-side secrets (MIDTRANS_SERVER_KEY, SUPABASE_SERVICE_ROLE_KEY) belong
+# in Supabase Edge Function secrets, never in Netlify's VITE_ variables.
+
+[build]
+  base = "trial-101"
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# React Router SPA fallback: direct visits and refreshes on client routes must
+# return index.html instead of a Netlify 404.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Frame-Options = "DENY"
+
+# Vite emits content-hashed filenames under /assets; they can be cached forever.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Product photos are not content-hashed, so keep this cache shorter than the
+# immutable /assets cache in case a filename is reused.
+[[headers]]
+  for = "/outputFiles/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"

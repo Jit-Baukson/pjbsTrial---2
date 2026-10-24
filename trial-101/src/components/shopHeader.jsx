@@ -1,8 +1,47 @@
+    import { useEffect, useState } from 'react'
     import { Link } from 'react-router-dom'
     import { useCart } from '../context/cart.jsx'
+    import { useAuth } from '../context/auth.jsx'
+    import { getProfile } from '../lib/profiles.js'
+
+    // Greeting priority: typed name -> Instagram handle -> time-of-day. Never email.
+    function timeGreeting() {
+        const h = new Date().getHours()
+        if (h < 12) return 'Good morning'
+        if (h < 18) return 'Good afternoon'
+        return 'Good evening'
+    }
+
+    function buildGreeting(profile) {
+        const name = (profile?.name || '').trim()
+        if (name) return `Hi, ${name}`
+        const ig = (profile?.instagram || '').trim().replace(/^@/, '')
+        if (ig) return `Hi, @${ig}`
+        return timeGreeting()
+    }
 
     function Header() {
         const { count } = useCart()
+        const { user } = useAuth()
+        const [greeting, setGreeting] = useState(() => timeGreeting())
+
+        useEffect(() => {
+            if (!user) return
+            let active = true
+            getProfile(user.id)
+                .then((p) => {
+                    if (active) setGreeting(buildGreeting(p))
+                })
+                .catch(() => {})
+            // Refresh instantly when the profile is saved anywhere in the app.
+            const onProfile = (e) => setGreeting(buildGreeting(e.detail))
+            window.addEventListener('stickit:profile', onProfile)
+            return () => {
+                active = false
+                window.removeEventListener('stickit:profile', onProfile)
+            }
+        }, [user])
+
         return(
             <header className="shop-header">
                 <div className="shop-header__inner">
@@ -26,6 +65,17 @@
                         {count > 0 && <span className="cart-badge">{count}</span>}
                     </Link>
                 </div>
+                {user && (
+                    <Link className="shop-header__greeting" to="/profile" aria-label="Your profile">
+                        {greeting}
+                    </Link>
+                )}
+                <Link className="shop-header__profile" to="/profile" aria-label="Your profile">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <circle cx="12" cy="8.5" r="4" fill="var(--brown-nav)"/>
+                        <path d="M4 20.5C4 16.08 7.58 12.5 12 12.5s8 3.58 8 8" fill="var(--brown-nav)"/>
+                    </svg>
+                </Link>
                 <div className="site-header__rule" aria-hidden="true"></div>
             </header>
         );

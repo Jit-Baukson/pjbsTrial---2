@@ -4,10 +4,18 @@ import { supabase } from './supabaseClient.js'
 // host depending on VITE_MIDTRANS_ENV. Safe to call repeatedly.
 export function loadSnap() {
     const env = import.meta.env.VITE_MIDTRANS_ENV || 'sandbox'
+    const clientKey = import.meta.env.VITE_MIDTRANS_CLIENT_KEY || ''
     const host =
         env === 'production'
             ? 'https://app.midtrans.com'
             : 'https://app.sandbox.midtrans.com'
+
+    if (!clientKey) {
+        console.error('[payments] VITE_MIDTRANS_CLIENT_KEY is not configured')
+        return Promise.reject(
+            new Error('Payments are temporarily unavailable. Please try again later.')
+        )
+    }
 
     return new Promise((resolve, reject) => {
         if (window.snap) return resolve(window.snap)
@@ -22,7 +30,7 @@ export function loadSnap() {
         const s = document.createElement('script')
         s.id = 'snap-js'
         s.src = `${host}/snap/snap.js`
-        s.dataset.clientKey = import.meta.env.VITE_MIDTRANS_CLIENT_KEY || ''
+        s.dataset.clientKey = clientKey
         s.async = true
         s.onload = () => resolve(window.snap)
         s.onerror = () => reject(new Error('Failed to load Midtrans Snap SDK'))
@@ -33,6 +41,11 @@ export function loadSnap() {
 // Requests a Snap token for an order from the Edge Function (which recomputes
 // the amount from the DB), then opens the payment popup.
 export async function payForOrder(orderId, { onFinish, onClose } = {}) {
+    if (!import.meta.env.VITE_MIDTRANS_CLIENT_KEY) {
+        console.error('[payments] VITE_MIDTRANS_CLIENT_KEY is not configured')
+        throw new Error('Payments are temporarily unavailable. Please try again later.')
+    }
+
     const { data, error } = await supabase.functions.invoke(
         'midtrans-create-transaction',
         { body: { orderId } }

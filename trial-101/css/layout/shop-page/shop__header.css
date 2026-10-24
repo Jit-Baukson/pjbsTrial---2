@@ -41,3 +41,71 @@
     position:-ms-page;
     font-size: 1.5rem;
 }
+
+/* ---- cart pushed to the right end of the header row ---- */
+.shop-header__inner .site-header__cart {
+    margin-left: auto;
+}
+
+/* ---- profile pinned to the top-right corner of the page ---- */
+.shop-header__profile {
+    position: absolute;
+    top: 0;
+    right: var(--page-gutter);
+    z-index: 2;
+
+    width: clamp(44px, 4vw, 60px);
+    aspect-ratio: 1 / 1;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 3px solid var(--salmon);
+    border-radius: 50%;
+    background: var(--soft-gold);
+    overflow: hidden;
+
+    box-shadow: -3px 3px 0 rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+
+    transition:
+        transform 0.2s var(--ease-out),
+        box-shadow 0.2s var(--ease-out);
+}
+
+.shop-header__profile:hover {
+    transform: translate(2px, -2px);
+    box-shadow: -5px 5px 0 rgba(0, 0, 0, 0.18);
+}
+
+.shop-header__profile svg {
+    width: 62%;
+    height: 62%;
+}
+
+/* ---- greeting shown to the left of the avatar (signed-in only) ---- */
+.shop-header__greeting {
+    position: absolute;
+    top: 0;
+    right: calc(var(--page-gutter) + clamp(44px, 4vw, 60px) + 14px);
+    z-index: 2;
+    height: clamp(44px, 4vw, 60px);
+    max-width: 40vw;
+
+    display: inline-flex;
+    align-items: center;
+
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    color: var(--brown-nav);
+    text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.shop-header__greeting:hover {
+    color: var(--brown-wood);
+    text-decoration: underline;
+}

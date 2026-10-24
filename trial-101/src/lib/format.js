@@ -14,16 +14,13 @@ export function formatIDR(value) {
     return idr.format(Number.isFinite(n) ? n : 0)
 }
 
-// Compact price for tight card badges: 15000 -> "15rb", 1500 -> "1.5rb", 900 -> "900"
-// Avoids the previous bug where 1001 rendered as "1.001K" with no rounding.
-export function formatIDRCompact(value) {
+// Compact price for product cards (before the item is opened): price / 1000 + "k".
+// 15000 -> "15k", 12500 -> "12.5k" (trailing .0 stripped). No currency symbol.
+// Anything under 1000 has no meaningful "k" value, so show the plain number.
+export function formatPriceK(value) {
     const n = Number(value)
-    if (!Number.isFinite(n) || n <= 0) return idr.format(0)
-    if (n >= 1000) {
-        const thousands = n / 1000
-        // at most 1 decimal, then strip trailing ".0"
-        const label = thousands.toFixed(1).replace(/\.0$/, '')
-        return `Rp${label}rb`
-    }
-    return `Rp${n}`
+    if (!Number.isFinite(n) || n <= 0) return '0'
+    if (n < 1000) return `${Math.round(n)}`
+    const label = (n / 1000).toFixed(1).replace(/\.0$/, '')
+    return `${label}k`
 }

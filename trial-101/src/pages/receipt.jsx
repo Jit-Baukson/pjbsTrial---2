@@ -21,6 +21,8 @@ export default function Receipt() {
         }
     }, [orderId])
 
+    const firstName = order?.buyer?.name?.trim().split(/\s+/)[0] || 'there'
+
     return (
         <>
             <Header />
@@ -43,7 +45,7 @@ export default function Receipt() {
                         <div className="receipt">
                             <div className="receipt-card">
                                 <p className="receipt-thanks">
-                                    Thank you for your order, {order.buyer.name.split(' ')[0]}! 🎉
+                                    Thank you for your order, {firstName}! 🎉
                                 </p>
                                 <p className="receipt-ref">
                                     Order <strong>{order.orderRef}</strong>
@@ -53,14 +55,15 @@ export default function Receipt() {
 
                                 <ul className="receipt-items">
                                     {order.items.map((it) => (
-                                        <li key={it.productId}>
+                                        <li key={it.lineId}>
                                             <ProductImage
                                                 className="receipt-thumb"
                                                 src={`/outputFiles/${it.imagePath}`}
                                                 alt={it.productCode}
                                             />
                                             <span className="receipt-item__title">
-                                                {it.title} × {it.quantity}
+                                                {it.title}
+                                                {it.packed === 'group' ? ` × ${it.quantity}` : ''}
                                             </span>
                                             <span className="receipt-item__price">
                                                 {formatIDR(it.price * it.quantity)}
@@ -85,13 +88,21 @@ export default function Receipt() {
                                 </div>
 
                                 <div className="summary-box">
-                                    <p className="summary__title">Shipping to</p>
+                                    <p className="summary__title">Meet-up details</p>
                                     <p className="summary__content">
-                                        {order.buyer.address}, {order.buyer.city}
-                                        {order.buyer.postal ? ` ${order.buyer.postal}` : ''}
-                                        <br />
+                                        {order.buyer.meet && (
+                                            <>
+                                                Meet at: <strong>{order.buyer.meet}</strong>
+                                                <br />
+                                            </>
+                                        )}
+                                        {order.buyer.ig && (
+                                            <>
+                                                IG: @{String(order.buyer.ig).replace(/^@/, '')}
+                                                <br />
+                                            </>
+                                        )}
                                         {order.buyer.email}
-                                        {order.buyer.phone ? ` · ${order.buyer.phone}` : ''}
                                     </p>
                                 </div>
 

@@ -23,6 +23,7 @@ export default function ProductImage({ src, alt, className = '', ...rest }) {
             src={src}
             alt={alt}
             className={className}
+            decoding="async"
             onError={() => setFailed(true)}
             {...rest}
         />

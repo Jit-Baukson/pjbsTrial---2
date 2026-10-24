@@ -1,12 +1,12 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { supabase } from '../lib/supabaseClient.js'
-import { formatIDR, formatIDRCompact } from '../lib/format.js'
+import { formatIDR, formatPriceK } from '../lib/format.js'
 import ProductImage from './productImage.jsx'
 import QuantityStepper from './quantityStepper.jsx'
 import { useCart } from '../context/cart.jsx'
 
 function ProductsDisplay({ selectedCategory }) {
-    const { add } = useCart()
+    const { add, items } = useCart()
 
     const [individualProducts, setIndividualProducts] = useState([])
     const [groupProducts, setGroupProducts] = useState([])
@@ -28,14 +28,16 @@ function ProductsDisplay({ selectedCategory }) {
                 await Promise.all([
                     supabase
                         .from('products')
-                        .select('*')
+                        .select('productCode, category, packed, price, imagePath')
                         .eq('category', selectedCategory)
-                        .eq('packed', 'individual'),
+                        .eq('packed', 'individual')
+                        .eq('availability', true),
                     supabase
                         .from('products')
-                        .select('*')
+                        .select('productCode, category, packed, price, imagePath')
                         .eq('category', selectedCategory)
-                        .eq('packed', 'group'),
+                        .eq('packed', 'group')
+                        .eq('availability', true),
                 ])
 
             if (iErr || gErr) {
@@ -89,41 +91,79 @@ function ProductsDisplay({ selectedCategory }) {
         }
     }, [selectedProduct])
 
-    function handleAddToCart() {
-        add(selectedProduct, quantity)
-        setAdded(true)
-        setTimeout(() => setAdded(false), 1600)
-    }
-
-    const renderCard = (product, variant) => (
-        <div
-            className={variant}
-            key={`${variant}-${product.id ?? product.productCode}`}
-            role="button"
-            tabIndex={0}
-            aria-label={`View ${product.productCode}`}
-            onClick={() => openModal(product)}
-            onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault()
-                    openModal(product)
-                }
-            }}
-        >
-            <div className="img-background">
-                <ProductImage
-                    className={variant === 'individual-pack' ? 'individual__img' : undefined}
-                    src={`/outputFiles/${product.imagePath}`}
-                    alt={product.productCode}
-                    loading="lazy"
-                />
-                <p className="product__price">{formatIDRCompact(product.price)}</p>
-            </div>
-            <p className="product__title">{product.productCode}</p>
-        </div>
+    // Individual stickers are unique one-unit items, so once one is in the cart
+    // it can't be added again. Group/mystery packs are re-addable (quantity).
+    // Key on productCode (always present + unique), NOT id, which may be
+    // undefined on the local drifted schema and would match every card.
+    const individualInCart = useMemo(
+        () =>
+            new Set(
+                items
+                    .filter((i) => i.packed !== 'group')
+                    .map((i) => i.productCode)
+            ),
+        [items]
     )
 
+    function handleAddToCart() {
+        add(selectedProduct, quantity)
+        // Only group packs need the transient "Added ✓" flash that resets itself;
+        // for individuals the cart state keeps the button disabled permanently.
+        if (selectedProduct.packed === 'group') {
+            setAdded(true)
+            setTimeout(() => setAdded(false), 1600)
+        }
+    }
+
+    const renderCard = (product, variant) => {
+        const alreadyAdded =
+            variant === 'individual-pack' && individualInCart.has(product.productCode)
+        return (
+            <div
+                className={`${variant}${alreadyAdded ? ' is-in-cart' : ''}`}
+                key={`${variant}-${product.id ?? product.productCode}`}
+                role="button"
+                tabIndex={0}
+                aria-label={
+                    alreadyAdded
+                        ? `${product.productCode} — already in cart`
+                        : `View ${product.productCode}`
+                }
+                aria-disabled={alreadyAdded || undefined}
+                onClick={() => openModal(product)}
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        openModal(product)
+                    }
+                }}
+            >
+                <div className="img-background">
+                    <ProductImage
+                        className={variant === 'individual-pack' ? 'individual__img' : undefined}
+                        src={`/outputFiles/${product.imagePath}`}
+                        alt={product.productCode}
+                        loading="lazy"
+                    />
+                    <p className="product__price">{formatPriceK(product.price)}</p>
+
+                    {alreadyAdded && (
+                        <span className="card-added__overlay" aria-hidden="true">
+                            <span className="card-added__badge">In cart</span>
+                        </span>
+                    )}
+                </div>
+                <p className="product__title">{product.productCode}</p>
+            </div>
+        )
+    }
+
     const total = individualProducts.length + groupProducts.length
+
+    const selectedAlreadyInCart =
+        !!selectedProduct &&
+        selectedProduct.packed !== 'group' &&
+        individualInCart.has(selectedProduct.productCode)
 
     return (
         <div className="shop-products">
@@ -150,9 +190,9 @@ function ProductsDisplay({ selectedCategory }) {
                 {!loading && total === 0 && (
                     <p className="products__empty">
                         {loadError
-                            ? 'We could not load products right now. Please try again shortly.'
+                            ? 'nah nothin I can show here now, come again'
                             : selectedCategory
-                              ? 'No products in this category yet — check back soon!'
+                              ? 'nothin here — check back soon!'
                               : 'Pick a category to browse stickers.'}
                     </p>
                 )}
@@ -187,10 +227,22 @@ function ProductsDisplay({ selectedCategory }) {
 
                         <p className="modal-product-price">{formatIDR(selectedProduct.price)}</p>
 
-                        <QuantityStepper value={quantity} onChange={setQuantity} min={1} max={99} />
+                        {/* Only mystery/group packs take a quantity; individual
+                            stickers are a single unit. */}
+                        {selectedProduct.packed === 'group' && (
+                            <QuantityStepper value={quantity} onChange={setQuantity} min={1} max={99} />
+                        )}
 
-                        <button className="add-to-cart-btn" onClick={handleAddToCart}>
-                            {added ? 'Added ✓' : 'Add to Cart'}
+                        <button
+                            className="add-to-cart-btn"
+                            onClick={handleAddToCart}
+                            disabled={selectedAlreadyInCart}
+                        >
+                            {selectedAlreadyInCart
+                                ? 'In cart ✓'
+                                : added
+                                  ? 'Added ✓'
+                                  : 'Add to Cart'}
                         </button>
                     </div>
                 </div>

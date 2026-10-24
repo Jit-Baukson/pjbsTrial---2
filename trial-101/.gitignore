@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Supabase CLI local state (contains local service-role/JWT secrets)
+/supabase/.temp/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

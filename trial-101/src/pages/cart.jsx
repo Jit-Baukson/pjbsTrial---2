@@ -29,7 +29,7 @@ export default function Cart() {
                         <div className="cart-layout">
                             <div className="product-items__container">
                                 {items.map((it) => (
-                                    <div className="product__item" key={it.productId}>
+                                    <div className="product__item" key={it.lineId}>
                                         <ProductImage
                                             src={`/outputFiles/${it.imagePath}`}
                                             alt={it.productCode}
@@ -39,14 +39,20 @@ export default function Cart() {
                                             <p className="product__total">
                                                 {formatIDR(it.price)} each
                                             </p>
-                                            <QuantityStepper
-                                                value={it.quantity}
-                                                onChange={(q) => setQuantity(it.productId, q)}
-                                            />
+                                            {/* Only group / mystery packs take a quantity;
+                                                individual stickers are unique single units. */}
+                                            {it.packed === 'group' ? (
+                                                <QuantityStepper
+                                                    value={it.quantity}
+                                                    onChange={(q) => setQuantity(it.lineId, q)}
+                                                />
+                                            ) : (
+                                                <p className="product__unit">1 sticker · unique</p>
+                                            )}
                                             <button
                                                 type="button"
                                                 className="cart-remove"
-                                                onClick={() => remove(it.productId)}
+                                                onClick={() => remove(it.lineId)}
                                             >
                                                 Remove
                                             </button>

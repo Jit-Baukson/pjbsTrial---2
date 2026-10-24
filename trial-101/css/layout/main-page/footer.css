@@ -55,3 +55,81 @@ footer.contact {
         grid-template-columns: 64px minmax(0, 1fr);
     }
 }
+
+/* ---- "email copied" toast — minimalist, subtle sparkle burst ---- */
+.copy-toast {
+    position: fixed;
+    left: 50%;
+    bottom: clamp(24px, 6vh, 64px);
+    transform: translateX(-50%);
+    z-index: 50;
+
+    padding: 10px 18px;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--ink);
+    background: var(--panel-bg);
+    border: 2px solid var(--ink);
+    border-radius: 10px;
+    box-shadow: -4px 4px 0 rgba(0, 0, 0, 0.1);
+
+    animation:
+        toast-pop 0.3s var(--ease-out) both,
+        toast-fade 0.3s ease-in 1.7s forwards;
+}
+
+/* subtle particle burst, radiating from the toast centre */
+.copy-toast__burst {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+}
+
+.copy-toast__burst i {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--ink);
+    opacity: 0;
+    animation: firework 0.7s var(--ease-out) forwards;
+}
+
+.copy-toast__burst i:nth-child(1) { --a: 0deg; }
+.copy-toast__burst i:nth-child(2) { --a: 45deg; }
+.copy-toast__burst i:nth-child(3) { --a: 90deg; }
+.copy-toast__burst i:nth-child(4) { --a: 135deg; }
+.copy-toast__burst i:nth-child(5) { --a: 180deg; }
+.copy-toast__burst i:nth-child(6) { --a: 225deg; }
+.copy-toast__burst i:nth-child(7) { --a: 270deg; }
+.copy-toast__burst i:nth-child(8) { --a: 315deg; }
+
+@keyframes toast-pop {
+    0%   { transform: translateX(-50%) scale(0.9); opacity: 0; }
+    100% { transform: translateX(-50%) scale(1); opacity: 1; }
+}
+
+@keyframes toast-fade {
+    to { opacity: 0; transform: translateX(-50%) translateY(6px); }
+}
+
+@keyframes firework {
+    0%   { opacity: 0.5; transform: rotate(var(--a)) translateY(0); }
+    100% { opacity: 0; transform: rotate(var(--a)) translateY(-26px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .copy-toast,
+    .copy-toast__burst i {
+        animation: none;
+    }
+    .copy-toast__burst {
+        display: none;
+    }
+}
