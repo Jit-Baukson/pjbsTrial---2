@@ -15,21 +15,29 @@ export default defineConfig(({ mode }) => {
     )
   }
 
-  if (!env.VITE_MIDTRANS_CLIENT_KEY) {
-    const message =
-      'VITE_MIDTRANS_CLIENT_KEY is empty. Checkout payments will be unavailable.'
-    const productionDeploy =
-      env.VITE_MIDTRANS_ENV === 'production' || process.env.CONTEXT === 'production'
-    if (productionDeploy) {
-      throw new Error(`${message} Refusing to build a production bundle without it.`)
-    }
-    console.warn(`[vite] ${message}`)
+  // Midtrans is optional for a catalog/demo deploy, but the chosen
+  // environment must be explicit whenever a client key is supplied.
+  const clientKey = env.VITE_MIDTRANS_CLIENT_KEY || ''
+  const midtransEnv = env.VITE_MIDTRANS_ENV || 'sandbox'
+
+  if (clientKey && !env.VITE_MIDTRANS_ENV) {
+    throw new Error(
+      'VITE_MIDTRANS_ENV must be set to "sandbox" or "production" when a client key is configured.',
+    )
   }
 
-  if (process.env.CONTEXT === 'production' && env.VITE_MIDTRANS_ENV !== 'production') {
-    throw new Error(
-      'VITE_MIDTRANS_ENV must be "production" on Netlify production builds. ' +
-        'Use a Deploy Preview for sandbox payments.',
+  if (!clientKey) {
+    if (midtransEnv === 'production') {
+      throw new Error(
+        'VITE_MIDTRANS_CLIENT_KEY is required for a production payment build.',
+      )
+    }
+    console.warn(
+      '[vite] VITE_MIDTRANS_CLIENT_KEY is empty. Building in sandbox/demo mode; checkout payments will be unavailable.',
+    )
+  } else if (midtransEnv !== 'production') {
+    console.warn(
+      '[vite] Building with Midtrans sandbox. Real payments are disabled; use test payment details.',
     )
   }
 

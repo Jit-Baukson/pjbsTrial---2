@@ -78,6 +78,8 @@ export default function Checkout() {
     }, [count, items])
 
     const total = subtotal + SHIPPING_COST
+    const paymentsConfigured = Boolean(import.meta.env.VITE_MIDTRANS_CLIENT_KEY)
+    const sandboxPayments = import.meta.env.VITE_MIDTRANS_ENV !== 'production'
 
     function update(field) {
         return (e) => setBuyer((b) => ({ ...b, [field]: e.target.value }))
@@ -135,6 +137,12 @@ export default function Checkout() {
 
         if (!buyer.name || !buyer.email || !buyer.ig || !buyer.meet) {
             setError('Please fill in your name, email, Instagram and where you want to meet.')
+            return
+        }
+
+        // Do not reserve unique stickers for an order that cannot be paid.
+        if (!paymentsConfigured) {
+            setError('Payments are not configured on this deployment. Please contact Stickit.co.')
             return
         }
 
@@ -207,7 +215,7 @@ export default function Checkout() {
                                 </p>
                             )}
 
-                            <button type="submit" className="checkout-btn" disabled={submitting}>
+                            <button type="submit" className="checkout-btn" disabled={submitting || !paymentsConfigured}>
                                 {submitting
                                     ? 'Opening payment…'
                                     : pendingOrder
@@ -221,7 +229,9 @@ export default function Checkout() {
                                 </Link>
                             )}
                             <p className="checkout-note">
-                                You’ll complete payment securely in the Midtrans popup.
+                                {!paymentsConfigured
+                                    ? 'Payments are not configured for this deployment. No order will be placed.'
+                                    : `${sandboxPayments ? 'Sandbox mode — use Midtrans test payment details. ' : ''}You’ll complete payment securely in the Midtrans popup.`}
                             </p>
                         </form>
 

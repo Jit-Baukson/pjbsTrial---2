@@ -127,11 +127,24 @@ Set these Netlify environment variables before the first build:
 | `VITE_SUPABASE_URL` | `https://<project-ref>.supabase.co` |
 | `VITE_SUPABASE_PUBLISHABLE_KEY` | Supabase publishable (or anon) key |
 | `VITE_MIDTRANS_CLIENT_KEY` | Midtrans client key (public) |
-| `VITE_MIDTRANS_ENV` | `production` |
+| `VITE_MIDTRANS_ENV` | `production` for real payments; `sandbox` for testing |
 
-The Vite config fails the production build if the Supabase variables or a
-production Midtrans client key are missing, so a misconfigured deploy fails in
-the build log instead of rendering a blank page.
+The Vite config always requires the Supabase variables. A production payment
+build (`VITE_MIDTRANS_ENV=production`) fails if the client key is missing.
+A sandbox build is allowed and clearly warns in the build log; the checkout
+shows “Sandbox mode — use Midtrans test payment details.”
+
+### Sandbox-only deployment
+
+If you only have sandbox Midtrans credentials, use:
+
+```text
+VITE_MIDTRANS_CLIENT_KEY=<sandbox client key>
+VITE_MIDTRANS_ENV=sandbox
+```
+
+The site will build and Snap will open in sandbox mode. It cannot accept real
+payments. Never pair `VITE_MIDTRANS_ENV=production` with sandbox credentials.
 
 ### Post-deploy smoke test
 
